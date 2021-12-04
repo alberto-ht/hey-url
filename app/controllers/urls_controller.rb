@@ -1,19 +1,23 @@
 # frozen_string_literal: true
-
 class UrlsController < ApplicationController
   def index
     # recent 10 short urls
     @url = Url.new
-    @urls = [
-      Url.new(short_url: 'ABCDE', original_url: 'http://google.com', created_at: Time.now),
-      Url.new(short_url: 'ABCDG', original_url: 'http://facebook.com', created_at: Time.now),
-      Url.new(short_url: 'ABCDF', original_url: 'http://yahoo.com', created_at: Time.now)
-    ]
+    @urls = Url.latest
   end
 
   def create
-    raise 'add some code'
+    #raise 'add some code'
     # create a new URL record
+    @url = Url.new(url_params)
+    if @url.save
+      flash[:notice] = 'The URL was created!'
+      redirect_to root_path
+    else
+      @urls = Url.latest
+      render :index
+    end
+
   end
 
   def show
@@ -47,6 +51,49 @@ class UrlsController < ApplicationController
 
   def visit
     # params[:short_url]
-    render plain: 'redirecting to url...'
+    #render plain: 'redirecting to url...'
+    @short_url = params[:short_url]
+    @url = Url.find_by(short_url: @short_url)
+
+    # check browser & platform
+    bro = chkbrw(bro)
+    plat = chkplat(plat)
+
+    @click = Click.create(url: @url, browser: bro, platform: plat)   
+    @url.clicks_count = @url.clicks_count + 1
+    @url.save
+    redirect_to "#{@url.original_url}"
   end
+
+  private
+
+  def url_params
+    params.require(:url).permit(:original_url, :short_url)
+  end
+
+  def chkbrw(bro)
+    if browser.firefox?
+      bro ='firefox'
+    else
+      if browser.chrome?
+        bro='chrome'
+      else
+        bro='other'
+      end
+    end
+    return bro
+  end
+
+  def chkplat(plat)
+      if browser.platform.windows?
+      plat ='windows'
+    else
+      if browser.platform.linux?
+        plat='linux'
+      else
+        plat='other'
+      end
+    end
+  end
+
 end
