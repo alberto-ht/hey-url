@@ -44,8 +44,7 @@ class UrlsController < ApplicationController
       @url.save
       redirect_to "#{@url.original_url}"
     else
-      flash[:notice] = 'The short URL does not exist!'
-      redirect_to root_path
+      render :file => 'public/404.html', :status => :not_found, :layout => false
     end
 
 
