@@ -21,32 +21,12 @@ class UrlsController < ApplicationController
   end
 
   def show
-    @url = Url.new(short_url: 'ABCDE', original_url: 'http://google.com', created_at: Time.now)
-    # implement queries
-    @daily_clicks = [
-      ['1', 13],
-      ['2', 2],
-      ['3', 1],
-      ['4', 7],
-      ['5', 20],
-      ['6', 18],
-      ['7', 10],
-      ['8', 20],
-      ['9', 15],
-      ['10', 5]
-    ]
-    @browsers_clicks = [
-      ['IE', 13],
-      ['Firefox', 22],
-      ['Chrome', 17],
-      ['Safari', 7]
-    ]
-    @platform_clicks = [
-      ['Windows', 13],
-      ['macOS', 22],
-      ['Ubuntu', 17],
-      ['Other', 7]
-    ]
+
+    @url = Url.find_by(short_url: params[:url])
+    @daily_clicks = @url.daily_clicks
+    @browsers_clicks = @url.brw_clicks
+    @platform_clicks = @url.plat_clicks
+
   end
 
   def visit
@@ -54,15 +34,21 @@ class UrlsController < ApplicationController
     #render plain: 'redirecting to url...'
     @short_url = params[:short_url]
     @url = Url.find_by(short_url: @short_url)
+    if(@url)
+      # check browser & platform
+      bro = chkbrw(bro)
+      plat = chkplat(plat)
+      # create click object
+      @click = Click.create(url: @url, browser: bro, platform: plat)   
+      @url.clicks_count = @url.clicks_count + 1
+      @url.save
+      redirect_to "#{@url.original_url}"
+    else
+      flash[:notice] = 'The short URL does not exist!'
+      redirect_to root_path
+    end
 
-    # check browser & platform
-    bro = chkbrw(bro)
-    plat = chkplat(plat)
 
-    @click = Click.create(url: @url, browser: bro, platform: plat)   
-    @url.clicks_count = @url.clicks_count + 1
-    @url.save
-    redirect_to "#{@url.original_url}"
   end
 
   private
