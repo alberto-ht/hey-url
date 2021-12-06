@@ -15,6 +15,7 @@ class UrlsController < ApplicationController
       redirect_to root_path
     else
       @urls = Url.latest
+      
       render :index
     end
 

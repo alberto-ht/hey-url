@@ -1,0 +1,1 @@
+json.array! @clicks, partial: 'api/v1/clicks/click', as: :aClick

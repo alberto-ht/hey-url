@@ -1,0 +1,1 @@
+json.array! @urls, partial: 'api/v1/urls/url', as: :url
