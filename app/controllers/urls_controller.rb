@@ -24,9 +24,13 @@ class UrlsController < ApplicationController
   def show
 
     @url = Url.find_by(short_url: params[:url])
-    @daily_clicks = @url.daily_clicks
-    @browsers_clicks = @url.brw_clicks
-    @platform_clicks = @url.plat_clicks
+    if @url
+      @daily_clicks = @url.daily_clicks
+      @browsers_clicks = @url.brw_clicks
+      @platform_clicks = @url.plat_clicks
+    else
+      render :file => 'public/404.html', :status => :not_found, :layout => false
+    end
 
   end
 
@@ -39,10 +43,9 @@ class UrlsController < ApplicationController
       # check browser & platform
       bro = chkbrw(bro)
       plat = chkplat(plat)
-      # create click object
-      @click = Click.create(url: @url, browser: bro, platform: plat)   
-      @url.clicks_count = @url.clicks_count + 1
-      @url.save
+      # create click object and increment url.clicks_count
+      Click.create_click(@url, bro,plat)
+
       redirect_to "#{@url.original_url}"
     else
       render :file => 'public/404.html', :status => :not_found, :layout => false
