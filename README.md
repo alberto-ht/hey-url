@@ -1,3 +1,37 @@
+HeyUrl challenge
+git clone https://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@github.com/fullstacklabs/hey-url-challenge-code.git
+cd hey-url-challenge-code
+git remote -v
+git remote set-url origin https://github.com/albertohtesta/hey-url-challenge-code.git
+git remote -v
+git push -u https://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@github.com/albertohtesta/hey-url-challenge-code.git
+
+cambiar nombre de db
+rails db:create
+rails db:migrate
+rails s
+
+gemfile
+test
+
+test
+in spec/rails_helper:
+require 'validate_url/rspec_matcher'
+
+
+Then make two more system-setup tweaks that will be useful. First, in the
+rails_helper file, uncomment the following line:
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+
+in:
+/spec/support/system.rb:
+RSpec.configure do |config|
+config.before(:each, type: :system) do
+driven_by :rack_test
+end
+end
+
+--------------------------------------------------------------
 ![FullStack Labs](app/assets/images/FSL-logo-portrait.png)
 
 # HeyURL! Code Challenge

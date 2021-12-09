@@ -18,7 +18,7 @@ RSpec.describe Url, type: :model do
     it 'validates clicks_count is incremented by one' do
       url = Url.create(original_url: "https://www.google.com/")
       click = Click.create_click(url, "chrome","linux")
-      expect(url.clicks.count).to eq(1)
+      expect(url.clicks_count).to eq(1)
     end
 
   end

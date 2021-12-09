@@ -14,33 +14,15 @@ RSpec.describe 'Short Urls', type: :system do
     driven_by :selenium, using: :firefox
 
   end
-
+=begin
   describe 'index' do
     it 'shows a list of short urls' do
       url = Url.create(original_url: "https://www.google.com/")
       visit root_path
       expect(page).to have_text('HeyURL!')
       expect(page).to have_selector("#aUrl")
-
+      expect(page).to have_selector("tr>td", text: "https://www.google.com")
     end
-  end
-
-  describe 'show' do
-    it 'shows a panel of stats for a given short url' do
-      url = Url.create(original_url: "https://www.google.com/")
-      short_url = url.short_url
-      visit url_path("#{short_url}")
-      expect(page).to have_text("#{short_url}")
-    end
-
-    context 'when not found' do
-      it 'shows a 404 page' do
-        url = Url.create(original_url: "https://www.google.com/")
-        visit url_path('NOTFOUND')
-        expect(page).to have_selector(".rails-default-error-page")
-      end
-    end
-
   end
 
   describe 'create' do
@@ -49,7 +31,8 @@ RSpec.describe 'Short Urls', type: :system do
         visit '/'
         fill_in "url[original_url]", with: "https://www.google.com/"
         click_on("Shorten URL")
-        expect(page).to have_selector("#aUrl")
+        s_url = Url.first.short_url
+        expect(page).to have_selector("tr>th", text: "#{s_url}")
       end
       it 'redirects to the home page' do
         visit '/'
@@ -74,8 +57,8 @@ RSpec.describe 'Short Urls', type: :system do
         expect(page).to have_text('HeyURL!')
       end
     end
-
   end
+
 
   describe 'visit' do
     it 'redirects the user to the original url' do
@@ -85,13 +68,39 @@ RSpec.describe 'Short Urls', type: :system do
       expect(page).to have_current_path("https://www.google.com/")
     end
 
-    context 'when not found' do
       it 'shows a 404 page' do
         url = Url.create(original_url: "https://www.google.com/")
         visit visit_path('NOTFOUND')
         expect(page).to have_selector(".rails-default-error-page")
       end
+
+      it 'dislay the number of clicks of the short Url' do
+        visit "/"
+        fill_in "url[original_url]", with: "https://www.google.com/"
+        click_on("Shorten URL")
+        s_url = Url.first.short_url
+        click_on("#{s_url}")
+        visit "/"
+        expect(page).to have_selector("tr>td", text: "1")
+      end
+
+  end
+=end
+
+  describe 'show' do
+    it 'shows a panel of stats for a given short url' do
+      url = Url.create(original_url: "https://www.google.com/")
+      short_url = url.short_url
+      visit url_path("#{short_url}")
+      expect(page).to have_text("#{short_url}")
     end
+
+      it 'shows a 404 page' do
+        url = Url.create(original_url: "https://www.google.com/")
+        visit url_path('NOTFOUND')
+        expect(page).to have_selector(".rails-default-error-page")
+      end
+
   end
 
 end

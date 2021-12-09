@@ -12,6 +12,8 @@ class Url < ApplicationRecord
     self.short_url = 5.times.map{ chars.sample }.join
   end
 
+
+
   def daily_clicks
     clicks = self.clicks.where('created_at >=? AND created_at <= ?', 
     DateTime.now.beginning_of_month-1, DateTime.now.end_of_month+1)
@@ -21,7 +23,6 @@ class Url < ApplicationRecord
   end
 
   def brw_clicks
-
     firefox = self.clicks.where(browser: 'firefox').size
     chrome = self.clicks.where(browser: 'chrome').size
     other = self.clicks.where(browser: 'other').size
