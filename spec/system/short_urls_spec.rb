@@ -14,7 +14,7 @@ RSpec.describe 'Short Urls', type: :system do
     driven_by :selenium, using: :firefox
 
   end
-=begin
+
   describe 'index' do
     it 'shows a list of short urls' do
       url = Url.create(original_url: "https://www.google.com/")
@@ -85,7 +85,6 @@ RSpec.describe 'Short Urls', type: :system do
       end
 
   end
-=end
 
   describe 'show' do
     it 'shows a panel of stats for a given short url' do
